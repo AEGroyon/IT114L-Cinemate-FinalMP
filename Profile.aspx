@@ -3,11 +3,16 @@
 <asp:Content ID="ProfileContent" ContentPlaceHolderID="MainContent" runat="server">
     <style>
         /* Profile Container */
+        body {
+            background-color: #121212;
+        }
+
         .profile-container {
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f8f9fa;
+            background-color: #292929;
+            color: #C9A068;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
@@ -30,11 +35,14 @@
             border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
+            background-color: #333333;
+            border-color: #333333;
+            color: #fff;
         }
 
         .profile-button {
             padding: 10px 20px;
-            background-color: #007bff;
+            background-color: #C9A068;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -42,7 +50,7 @@
         }
 
         .profile-button:hover {
-            background-color: #0056b3;
+            background-color: #D1A14A;
         }
 
         /* Booking History Section */
@@ -58,21 +66,22 @@
 
         .booking-grid th, .booking-grid td {
             padding: 8px;
-            border-bottom: 1px solid #ccc;
+            border-bottom: 1px solid #292929;
         }
 
         .booking-grid th {
-            background-color: #007bff;
+            background-color: #C9A068;
             color: #fff;
             text-align: left;
         }
 
         .booking-grid tr:nth-child(even) {
-            background-color: #f2f2f2;
+            background-color: #4e4f53;
+            color: #fff;
         }
 
         .booking-grid tr:hover {
-            background-color: #e2e6ea;
+            background-color: #414141;
         }
 
         /* Media Queries */
@@ -124,9 +133,10 @@
                 <Columns>
                     <asp:BoundField DataField="BookingID" HeaderText="Booking ID" />
                     <asp:BoundField DataField="MovieTitle" HeaderText="Movie Title" />
-                    <asp:BoundField DataField="ShowDate" HeaderText="Show Date" />
+                    <asp:BoundField DataField="ShowDate" HeaderText="Show Date and Time" DataFormatString="{0:dd/MM/yyyy HH:mm:ss}" />
                     <asp:BoundField DataField="SeatNumber" HeaderText="Seat Number" />
                     <asp:BoundField DataField="BookingDate" HeaderText="Booking Date" />
+                    <asp:BoundField DataField="TicketPrice" HeaderText="Ticket Price" DataFormatString="Php {0:N2}" />
                 </Columns>
             </asp:GridView>
         </div>

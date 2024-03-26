@@ -80,7 +80,7 @@ namespace IT114L_Cinemate_FinalMP
                 try
                 {
                     // Query to get booking history
-                    string getBookingHistoryQuery = "SELECT B.booking_id, M.title AS MovieTitle, M.show_date AS ShowDate, S.seat_number AS SeatNumber, B.booking_date AS BookingDate FROM [dbo].[BOOKING] B INNER JOIN [dbo].[MOVIE] M ON B.movie_id = M.movie_id INNER JOIN [dbo].[SEAT] S ON B.seat_id = S.seat_id WHERE B.username = @username";
+                    string getBookingHistoryQuery = "SELECT B.booking_id AS BookingID, M.title AS MovieTitle, CONCAT(M.show_date, ' ', M.show_time) AS ShowDate, S.seat_number AS SeatNumber, B.booking_date AS BookingDate, M.ticket_price AS TicketPrice FROM [dbo].[BOOKING] B INNER JOIN [dbo].[MOVIE] M ON B.movie_id = M.movie_id INNER JOIN [dbo].[SEAT] S ON B.seat_id = S.seat_id WHERE B.username = @username";
 
                     using (SqlConnection connection = new SqlConnection(connectionString))
                     {
@@ -90,6 +90,14 @@ namespace IT114L_Cinemate_FinalMP
                         SqlDataAdapter adapter = new SqlDataAdapter(cmd);
                         DataTable dt = new DataTable();
                         adapter.Fill(dt);
+
+                        // Format date and time without milliseconds
+                        foreach (DataRow row in dt.Rows)
+                        {
+                            DateTime showDateTime = DateTime.Parse(row["ShowDate"].ToString());
+                            row["ShowDate"] = showDateTime.ToString("dd/MM/yyyy hh:mm:ss tt"); // Using "tt" for AM/PM
+                        }
+
 
                         gvBookingHistory.DataSource = dt;
                         gvBookingHistory.DataBind();
