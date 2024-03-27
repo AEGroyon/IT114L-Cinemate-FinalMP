@@ -13,5 +13,20 @@ namespace IT114L_Cinemate_FinalMP
         {
 
         }
+        protected void Movie1Button_Click(object sender, EventArgs e)
+        {
+            // Redirect to Home.aspx
+            Response.Redirect("Movie1.aspx");
+        }
+        protected void Movie2Button_Click(object sender, EventArgs e)
+        {
+            // Redirect to Home.aspx
+            Response.Redirect("Movie2.aspx");
+        }
+        protected void Movie3Button_Click(object sender, EventArgs e)
+        {
+            // Redirect to Home.aspx
+            Response.Redirect("Movie3.aspx");
+        }
     }
 }

@@ -189,7 +189,7 @@
                         <p class='description'>
                             Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe, he must prevent a terrible future only he can foresee. 
                         </p>
-                        <asp:Button ID="MovieButton2" runat="server" Text="Book Now" CssClass="homeBtn"/>
+                        <asp:Button ID="MovieButton2" runat="server" Text="Book Now" CssClass="homeBtn" OnClick="Movie1Button_Click" />
                     </div>
                 </li>
                 <li class='item' style="background-image: url('Img/SpyFamily.jpg')">
@@ -198,7 +198,7 @@
                         <p class='description'> 
                             After receiving an order to be replaced in Operation Strix, Loid decides to help Anya win a cooking competition at Eden Academy by making the principal's favorite meal in order to prevent his replacement.
                         </p>
-                        <asp:Button ID="MovieButton3" runat="server" Text="Book Now" CssClass="homeBtn"/>
+                        <asp:Button ID="MovieButton3" runat="server" Text="Book Now" CssClass="homeBtn" OnClick="Movie2Button_Click" />
                     </div>
                 </li>
                 <li class='item' style="background-image: url('Img/Kung Fu Panda 4.jpg')">
@@ -207,7 +207,7 @@
                         <p class='description'>
                             After Po is tapped to become the Spiritual Leader of the Valley of Peace, he needs to find and train a new Dragon Warrior, while a wicked sorceress plans to re-summon all the master villains whom Po has vanquished to the spirit realm.
                         </p>
-                        <asp:Button ID="MovieButton4" runat="server" Text="Book Now" CssClass="homeBtn"/>
+                        <asp:Button ID="MovieButton4" runat="server" Text="Book Now" CssClass="homeBtn" OnClick="Movie3Button_Click" />
                     </div>
                 </li>
                 <li class='item' style="background-image: url('Img/Kingdom of the Planet of the Apes.jpg')">
