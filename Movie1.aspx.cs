@@ -37,8 +37,8 @@ namespace IT114L_Cinemate_FinalMP
                     // Populate labels with retrieved data
                     lblMovieTitle.Text = reader["title"].ToString();
                     lblSynopsis.Text = reader["synopsis"].ToString();
-                    lblShowDate.Text = ((DateTime)reader["show_date"]).ToString("dd/MM/yyyy");
-                    lblShowTime.Text = ((TimeSpan)reader["show_time"]).ToString(@"hh\:mm");
+                    lblShowDate.Text = "Show Date: " + ((DateTime)reader["show_date"]).ToString("dd/MM/yyyy");
+                    lblShowTime.Text = "Show Time: " + ((TimeSpan)reader["show_time"]).ToString(@"hh\:mm");
                     lblTicketPrice.Text = $"Php {Convert.ToDecimal(reader["ticket_price"]).ToString("0.00")}";
 
                     // Convert duration from minutes to hours and minutes format
@@ -62,76 +62,159 @@ namespace IT114L_Cinemate_FinalMP
 
         protected void btnBookSeat_Click(object sender, EventArgs e)
         {
-            string seatNumber = showSeatNumber.Text;
-            if (!string.IsNullOrEmpty(seatNumber))
+            try
             {
+                // Establish connection string
                 string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MovieTicketDB.mdf;Integrated Security=True";
 
                 // Get the last booking_id from the BOOKING table
-                int bookingId;
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    string getLastBookingIdQuery = "SELECT TOP 1 booking_id FROM BOOKING ORDER BY booking_id DESC";
-                    SqlCommand command = new SqlCommand(getLastBookingIdQuery, connection);
-                    connection.Open();
-                    object result = command.ExecuteScalar();
-                    if (result != null && int.TryParse(result.ToString(), out int lastBookingId))
+                int lastBookingId = GetLastBookingId(connectionString);
+
+                // Calculate the new booking_id
+                int newBookingId = lastBookingId + 1;
+
+                // Get the logged-in username
+                string username = GetLoggedInUsername();
+
+                // Get the seat_id based on the value in showSeatNumber textbox
+                int seatId = GetSeatId(showSeatNumber.Text);
+
+                // Get the current date and time in the specified format
+                string bookingDate = "Mar 27 2024";
+
+                // Check seat availability
+                string availability = CheckSeatAvailability(connectionString, seatId);
+
+
+                if (availability == "Available")
+                { 
+                    // Insert into BOOKING table
+                    using (SqlConnection connection = new SqlConnection(connectionString))
                     {
-                        bookingId = lastBookingId + 1;
-                    }
-                    else
-                    {
-                        bookingId = 1;
-                    }
-                }
+                        // Open the connection
+                        connection.Open();
 
-                // Insert into BOOKING table
-                string insertBookingQuery = "INSERT INTO BOOKING (booking_id, username, movie_id, seat_id, booking_date) VALUES (@bookingId, @username, @movieId, @seatId, @bookingDate)";
-                string updateSeatQuery = "UPDATE SEAT SET availability = 'Unavailable' WHERE seat_id = @seatId";
+                        // Insert booking details into the database
+                        string insertBookingQuery = "INSERT INTO BOOKING (booking_id, username, movie_id, seat_id, booking_date) " +
+                                                    "VALUES (@booking_id, @username, @movie_id, @seat_id, @booking_date)";
+                        SqlCommand insertBookingCmd = new SqlCommand(insertBookingQuery, connection);
+                        insertBookingCmd.Parameters.AddWithValue("@booking_id", newBookingId);
+                        insertBookingCmd.Parameters.AddWithValue("@username", username);
+                        insertBookingCmd.Parameters.AddWithValue("@movie_id", 1); // Assuming movie_id is fixed for this example
+                        insertBookingCmd.Parameters.AddWithValue("@seat_id", seatId);
+                        insertBookingCmd.Parameters.AddWithValue("@booking_date", bookingDate);
+                        int rowsAffected = insertBookingCmd.ExecuteNonQuery();
 
-                using (SqlConnection connection = new SqlConnection(connectionString))
-                {
-                    SqlCommand insertCommand = new SqlCommand(insertBookingQuery, connection);
-                    insertCommand.Parameters.AddWithValue("@bookingId", bookingId);
-                    insertCommand.Parameters.AddWithValue("@username", GetLoggedInUsername());
-                    insertCommand.Parameters.AddWithValue("@movieId", 1); // First Movie
-                    insertCommand.Parameters.AddWithValue("@seatId", GetSeatId(seatNumber));
-                    insertCommand.Parameters.AddWithValue("@bookingDate", DateTime.Now.ToString("dd/MM/yyyy hh:mm:ss tt"));
-
-                    SqlCommand updateCommand = new SqlCommand(updateSeatQuery, connection);
-                    updateCommand.Parameters.AddWithValue("@seatId", GetSeatId(seatNumber));
-
-                    connection.Open();
-                    SqlTransaction transaction = connection.BeginTransaction();
-                    try
-                    {
-                        insertCommand.Transaction = transaction;
-                        updateCommand.Transaction = transaction;
-
-                        insertCommand.ExecuteNonQuery();
-                        updateCommand.ExecuteNonQuery();
-
-                        transaction.Commit();
-
-                        // Disable the booked seat button and change its color
-                        DisableBookedSeat(seatNumber);
-                    }
-                    catch (Exception ex)
-                    {
-                        transaction.Rollback();
-                        // Handle exception
-                    }
-                    finally
-                    {
+                        // Close the connection
                         connection.Close();
+
+                        if (rowsAffected > 0)
+                        {
+                            // Update seat availability
+                            UpdateSeatAvailability(connectionString, seatId);
+
+                            // Clear the seat selection and refresh the page
+                            showSeatNumber.Text = "";
+
+                            // Booking successful
+                            ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Booking successful.'); window.location.href = window.location.href;", true);
+        
+                            //Response.Redirect(Request.Url.AbsoluteUri);
+                        }
+                        else
+                        {
+                            // Handle booking failure
+                            ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Booking failed. Please try again.');", true);
+                        }
                     }
                 }
+                else if (availability == "Unavailable")
+                {
+                    // Seat already taken, show alert
+                    ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('This seat is already taken. Please choose another seat.');", true);
+                }
+                else
+                {
+                    // Handle other availability statuses if needed
+                    ClientScript.RegisterStartupScript(this.GetType(), "alert", "alert('Seat availability check failed.');", true);
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Error: {ex.Message}');", true);
             }
         }
 
-        private int GetSeatId(string seatNumber)
+        private string CheckSeatAvailability(string connectionString, int seatId)
         {
-            switch (seatNumber)
+            try
+            {
+                string query = "SELECT availability FROM SEAT WHERE seat_id = @seatId";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@seatId", seatId);
+                    connection.Open();
+                    string availability = command.ExecuteScalar()?.ToString();
+                    connection.Close();
+                    return availability;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                throw new Exception($"Error checking seat availability: {ex.Message}");
+            }
+        }
+
+        private void UpdateSeatAvailability(string connectionString, int seatId)
+        {
+            try
+            {
+                string query = "UPDATE SEAT SET availability = 'Unavailable' WHERE seat_id = @seatId";
+
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand(query, connection);
+                    command.Parameters.AddWithValue("@seatId", seatId);
+                    connection.Open();
+                    command.ExecuteNonQuery();
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions
+                throw new Exception($"Error updating seat availability: {ex.Message}");
+            }
+        }
+
+        private int GetLastBookingId(string connectionString)
+        {
+            int lastBookingId = 0;
+            string query = "SELECT MAX(booking_id) FROM BOOKING";
+
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+                connection.Open();
+                object result = command.ExecuteScalar();
+                connection.Close();
+
+                if (result != null && result != DBNull.Value)
+                {
+                    lastBookingId = Convert.ToInt32(result);
+                }
+            }
+
+            return lastBookingId;
+        }
+
+        private int GetSeatId(string seatName)
+        {
+            switch (seatName)
             {
                 case "A1":
                     return 1;
@@ -139,26 +222,49 @@ namespace IT114L_Cinemate_FinalMP
                     return 2;
                 case "A3":
                     return 3;
-                // Handle other seat numbers similarly
+                case "A4":
+                    return 4;
+                case "B1":
+                    return 5;
+                case "B2":
+                    return 6;
+                case "B3":
+                    return 7;
+                case "B4":
+                    return 8;
+                case "C1":
+                    return 9;
+                case "C2":
+                    return 10;
+                case "C3":
+                    return 11;
+                case "C4":
+                    return 12;
+                case "D1":
+                    return 13;
+                case "D2":
+                    return 14;
+                case "D3":
+                    return 15;
+                case "D4":
+                    return 16;
+                case "E1":
+                    return 17;
+                case "E2":
+                    return 18;
+                case "E3":
+                    return 19;
+                case "E4":
+                    return 20;
                 default:
-                    return 0;
-            }
-        }
-
-        private void DisableBookedSeat(string seatNumber)
-        {
-            Button btn = FindControl("btn" + seatNumber) as Button;
-            if (btn != null)
-            {
-                btn.Enabled = false;
-                btn.CssClass = "booked-seat-btn";
+                    return -1; // Invalid seat
             }
         }
 
         // This method should be implemented to get the logged-in username
         private string GetLoggedInUsername()
         {
-            /*
+            
             // Check if the session is not null and contains the username
             if (Session["Username"] != null)
             {
@@ -170,8 +276,8 @@ namespace IT114L_Cinemate_FinalMP
                 Response.Redirect("~/Default.aspx");
                 return null;
             }
-            */
-            return "TestAcc";
+            
+            //return "TestAcc";
         }
     }
 }

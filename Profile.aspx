@@ -123,7 +123,7 @@
             <asp:TextBox ID="showTxtPassword" runat="server" CssClass="profile-textbox" ReadOnly="true" />
             <br />
             <asp:Label ID="lblPassword" runat="server" Text="Change Password:" CssClass="profile-label" />
-            <asp:TextBox ID="txtPassword" runat="server" CssClass="profile-textbox" TextMode="Password" />
+            <asp:TextBox ID="txtPassword" runat="server" CssClass="profile-textbox" TextMode="Password"/>
             <br />
             <asp:Button ID="btnUpdateProfile" runat="server" Text="Update Profile" OnClick="btnUpdateProfile_Click" CssClass="profile-button" />
         </div>

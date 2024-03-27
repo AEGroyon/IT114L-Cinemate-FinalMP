@@ -2,61 +2,103 @@
 
 <asp:Content ID="Movie1Content" ContentPlaceHolderID="MainContent" runat="server">
    <style>
-       /* Style for the movie-details-container to center it */
+        body {
+        background-color: #121212;
+        }
+        /* Container for movie details and seat selection */
         .movie-details-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
             flex-direction: column;
-            margin-top: 50px; 
+            align-items: center;
+            margin-top: 50px;
         }
 
-        /* Style for the movie-info section */
+        /* Movie info section */
         .movie-info {
-            margin-top: 20px; 
+            margin-top: 15px;
+            margin-bottom: -25px;
             text-align: center;
+            color: #fff;
         }
+
+        .synopsis-container {
+            width: 48em;
+            height: 6em;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            background-color: #292929;
+        }
+
+
+        h3{
+            color: #fff;
+        }
+
+        /* Poster image */
         .poster-image {
             width: 16em;
             height: 8em;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Additional styles for movie-info labels */
-        .movie-info-label {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        /* Style for the seat buttons */
-        .seat-btn {
-            width: 50px;
-            height: 50px;
-            margin: 5px;
+        /* Seat selection container */
+        .seat-selection-container {
+            margin-top: 30px;
+            text-align: center;
         }
 
-        /* Style for the seat panels */
+        /* Seat panel */
         .seat-panel {
             margin-bottom: 10px;
         }
 
-        .seat-textbox {
-            width: 100%;
-            padding: 8px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            box-sizing: border-box;
-            background-color: #333333;
-            border-color: #333333;
+        /* Seat buttons */
+        .seat-btn {
+            width: 50px;
+            height: 50px;
+            margin: 5px;
+            font-size: 18px;
+            background-color: #D1A14A;
             color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
         }
+
+        .seat-btn:hover {
+            background-color: #292929;
+        }
+
+        .book-seat-button {
+            width: 100px;
+            height: 40px;
+            margin: 5px;
+            font-size: 18px;
+            background-color: #D1A14A;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            cursor: pointer;
+            margin-top: -15px;
+        }
+
+        .book-seat-button:hover {
+            background-color: #292929;
+        }
+
 
         /* Responsive design */
         @media screen and (max-width: 768px) {
             .seat-btn {
                 width: 40px;
                 height: 40px;
-                font-size: 12px;
+                font-size: 14px;
             }
 
             .seat-panel {
@@ -76,6 +118,12 @@
                 width: 100%;
             }
 
+            .synopsis-container {
+                width: 90%;
+                height: auto;
+                margin: 0 auto 10px;
+            }
+
             .seat-selection-container {
                 width: 100%;
             }
@@ -85,7 +133,10 @@
         <div class="movie-info">
             <h2><asp:Label ID="lblMovieTitle" runat="server" CssClass="movie-title" /></h2>
             <p><asp:Label ID="lblDuration" runat="server" CssClass="movie-info-label" /></p>
-            <p><asp:Label ID="lblSynopsis" runat="server" CssClass="movie-info-label" /></p>
+            <div class="synopsis-container">
+                <p><asp:Label ID="lblSynopsis" runat="server" CssClass="movie-info-textbox" /></p>
+            </div>
+            <%--<p><asp:Label ID="lblSynopsis" runat="server" CssClass="movie-info-label" /></p>--%>
             <p><asp:Label ID="lblShowDate" runat="server" CssClass="movie-info-label" /></p>
             <p><asp:Label ID="lblShowTime" runat="server" CssClass="movie-info-label" /></p>
             <p><asp:Label ID="lblTicketPrice" runat="server" CssClass="movie-info-label" /></p>
@@ -138,8 +189,9 @@
                     <asp:Button ID="E4Btn" runat="server" Text="E4" CssClass="seat-btn" OnClick="SeatButton_Click" />
                 </div>
             </div>
-            <asp:TextBox ID="showSeatNumber" runat="server" CssClass="seat-textbox" ReadOnly="true" />
             <br />
+            <asp:TextBox ID="showSeatNumber" runat="server" CssClass="seat-textbox" ReadOnly="true" />
+            <br /> <br />
             <asp:Button ID="btnBookSeat" runat="server" Text="Book Seat" CssClass="book-seat-button" OnClick="btnBookSeat_Click"/>
             <br /> <br />
         </div>

@@ -112,6 +112,14 @@ namespace IT114L_Cinemate_FinalMP
 
         protected void btnUpdateProfile_Click(object sender, EventArgs e)
         {
+            // Check if password field is empty
+            if (string.IsNullOrEmpty(txtPassword.Text))
+            {
+                // Show alert for empty password field
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Please enter your password.');", true);
+                return; // Exit the method
+            }
+
             // Establish connection string
             string connectionString = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=|DataDirectory|\MovieTicketDB.mdf;Integrated Security=True";
 
