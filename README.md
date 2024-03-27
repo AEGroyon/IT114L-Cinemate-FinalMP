@@ -46,9 +46,9 @@ Contributions are welcome! If you'd like to contribute to the project, please fo
 
 ## License
 
-This project is licensed under the [MIT License](LICENSE).
+This project is licensed under the Group 7 of IT114L.
 
 ## Acknowledgements
 
-- Special thanks to [contributors](CONTRIBUTORS.md) who have helped to improve this project.
-- Inspired by the need for a convenient and user-friendly online movie ticketing solution.
+- Special thanks to Robinsons MovieWorld for the Movie descriptions.
+- Special thanks to Sir Job Lipat for teaching us all the lessons and topics to create this project.
