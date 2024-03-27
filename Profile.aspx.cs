@@ -148,16 +148,16 @@ namespace IT114L_Cinemate_FinalMP
                         updateQuantityUsernameCmd.Parameters.AddWithValue("@oldUsername", GetLoggedInUsername()); // Use the old username
                         updateQuantityUsernameCmd.ExecuteNonQuery();
 
-                        // Display success message or redirect to another page
-                        // ScriptManager.RegisterStartupScript(this, this.GetType(), "updateSuccess", "alert('Profile updated successfully.');", true);
-                        ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Updated successfully.')", true);
+                        // Update session with the new username
+                        Session["Username"] = txtUsername.Text;
 
-                        // Redirect or reload the page to reflect the changes
-                        Response.Redirect(Request.Url.AbsoluteUri); // Redirect to the same page
+                        // Display success message and reload page;
+                        ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Updated successfully.'); window.location.href = window.location.href;", true);
                     }
                     else
                     {
                         // Display error message
+                        ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Update Failed. Please try again.');", true);
                     }
 
                     // Close the connection
@@ -166,17 +166,25 @@ namespace IT114L_Cinemate_FinalMP
             }
             catch (Exception ex)
             {
-                // Handle exceptions
+                // Username is already taken
+                ClientScript.RegisterStartupScript(this.GetType(), "alert", $"alert('Update Failed. Username is already taken. Please try again.');", true);
             }
         }
 
         // This method should be implemented to get the logged-in username
         private string GetLoggedInUsername()
         {
-            // Implement logic to get logged-in username (e.g., from session or authentication)
-            // For example:
-            // return Session["Username"].ToString();
-            return "TestAcc"; // Replace with actual implementation
+            // Check if the session is not null and contains the username
+            if (Session["Username"] != null)
+            {
+                return Session["Username"].ToString();
+            }
+            else
+            {
+                // Redirect to the login page or handle the scenario where the session is not available
+                Response.Redirect("~/Default.aspx");
+                return null;
+            }
         }
     }
 }

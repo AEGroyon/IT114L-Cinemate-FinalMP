@@ -13,5 +13,14 @@ namespace IT114L_Cinemate_FinalMP
         {
 
         }
+        protected void LogoutBtn_Click(object sender, EventArgs e)
+        {
+            // Clear the session
+            Session.Clear();
+            Session.Abandon();
+
+            // Redirect to Default.aspx
+            Response.Redirect("~/Default.aspx");
+        }
     }
 }

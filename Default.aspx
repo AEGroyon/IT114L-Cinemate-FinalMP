@@ -124,19 +124,18 @@
             </div>
         </div>
     </form>
-    <form id ="form2" runat ="server">
+    <form id ="form2" runat ="server" visible="false">
         <div class="container">
             <div id="signupContainer" class="panel-container">
                 <div id="signupPanel" class="card signup-card flip">
                     <h2>Sign Up</h2>
-                    <asp:TextBox ID="newUsername" runat="server" CssClass="input" placeholder="Username"></asp:TextBox>
+                    <asp:TextBox ID="newUsername" runat="server" CssClass="input" placeholder="Username" required></asp:TextBox>
                     <br />
-                    <asp:TextBox ID="email" runat="server" CssClass="input" TextMode="email" placeholder="Email"></asp:TextBox>
+                    <asp:TextBox ID="email" runat="server" CssClass="input" TextMode="email" placeholder="Email" required></asp:TextBox>
                     <br />
-                    <asp:TextBox ID="newPassword" runat="server" CssClass="input" TextMode="Password" placeholder="Password"></asp:TextBox>
-                    <br />
-                    <asp:Button ID="signupButton" runat="server" Text="Sign Up" CssClass="button" OnClick="signupButton_Click" />
-                    <asp:Button ID="LogButton" runat="server" Text="Login" CssClass="button" OnClick="LogButton_Click" />
+                    <asp:TextBox ID="newPassword" runat="server" CssClass="input" TextMode="Password" placeholder="Password" required></asp:TextBox>
+                    <br />                    
+                    <asp:Button ID="registerButton" runat="server" Text="Register" CssClass="button" OnClick="RegisterButton_Click"/>                    
                 </div>
             </div>
         </div>

@@ -96,21 +96,12 @@ namespace IT114L_Cinemate_FinalMP
         protected global::System.Web.UI.WebControls.TextBox newPassword;
 
         /// <summary>
-        /// signupButton control.
+        /// registerButton control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button signupButton;
-
-        /// <summary>
-        /// LogButton control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button LogButton;
+        protected global::System.Web.UI.WebControls.Button registerButton;
     }
 }
